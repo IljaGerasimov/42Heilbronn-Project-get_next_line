@@ -6,20 +6,36 @@
 /*   By: igerasim <igerasim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 13:52:58 by igerasim          #+#    #+#             */
-/*   Updated: 2025/12/11 04:44:22 by igerasim         ###   ########.fr       */
+/*   Updated: 2025/12/11 08:32:49 by igerasim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+static char	read_to_stash(int fd, t_gnl *stash)
+{
+	char	*line;
+}
+
+static char	*extract_line(t_gnl *stash);
+
 char	*get_next_line(int fd)
 {
-	char		*line;
-	static char	*stash;
+	static t_gnl	stash[FD_MAX];
 
-	if (fd < 0 || fd > FD_MAX)
+	if (fd < 0 || fd >= FD_MAX || BUFFER_SIZE <= 0)
+		return (NULL);
+	if (read_to_stash(fd, &stash[fd]) == 0 && stash[fd].len == 0)
 	{
+		if (stash[fd].buf)
+		{
+			free(stash[fd].buf);
+			stash[fd].buf = NULL;
+			stash[fd].len = 0;
+		}
+		return (NULL);
 	}
+	return (extract_line(&stash[fd]));
 }
 
 // Funktion get_next_line(fd):
