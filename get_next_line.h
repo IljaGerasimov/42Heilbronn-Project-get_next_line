@@ -6,7 +6,7 @@
 /*   By: igerasim <igerasim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 19:58:03 by igerasim          #+#    #+#             */
-/*   Updated: 2025/12/11 04:43:27 by igerasim         ###   ########.fr       */
+/*   Updated: 2026/01/15 01:09:56 by igerasim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,21 @@
 
 # include <stddef.h>
 # include <stdint.h>
+# include <unistd.h>
+# include <stdlib.h>
 
 typedef struct s_gnl
 {
 	char	*buf;
 	size_t	len;
-	size_t	buf_cap;
+	size_t	cap;
 }			t_gnl;
 
 char		*get_next_line(int fd);
 void		*ft_memchr(const void *s, int c, size_t n);
 void		*ft_memmove(void *dest, const void *src, size_t n);
-void		*ft_memset(void *s, int c, size_t n);
-void		*ft_mem_realloc(void *ptr, size_t old_size, size_t new_size);
+int			ft_append_stash(t_gnl *stash, char *tmp, int r);
+int			ft_free_ret(char *tmp, int ret_val);
+char		*ft_nuke_stash(t_gnl *stash);
 
 #endif

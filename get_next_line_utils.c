@@ -6,7 +6,7 @@
 /*   By: igerasim <igerasim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 19:58:08 by igerasim          #+#    #+#             */
-/*   Updated: 2025/12/11 04:44:41 by igerasim         ###   ########.fr       */
+/*   Updated: 2026/01/15 01:42:19 by igerasim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,37 +16,22 @@
 /// @return dest pointer
 void	*ft_memmove(void *dest, const void *src, size_t n)
 {
-	size_t	i;
+	unsigned char		*d;
+	const unsigned char	*s;
 
 	if (!dest && !src)
 		return (NULL);
-	if (dest < src)
-	{
-		i = 0;
-		while (i < n)
-		{
-			((unsigned char *)dest)[i] = ((const unsigned char *)src)[i];
-			i++;
-		}
-	}
-	else if (dest > src)
-	{
+	if (dest == src || n == 0)
+		return (dest);
+	d = (unsigned char *)dest;
+	s = (const unsigned char *)src;
+	if (d > s)
 		while (n--)
-			((unsigned char *)dest)[n] = ((const unsigned char *)src)[n];
-	}
+			d[n] = s[n];
+	else
+		while (n--)
+			*d++ = *s++;
 	return (dest);
-}
-
-/// @brief Fills the first 'n' bytes of memory area 's' with byte 'c'
-/// @param s string to overwrite
-/// @return pointer to s
-void	*ft_memset(void *s, int c, size_t n)
-{
-	if (!s)
-		return (NULL);
-	while (n--)
-		((unsigned char *)s)[n] = (unsigned char)c;
-	return (s);
 }
 
 /// @brief Scans the first 'n' bytes of memory area 's' for the character 'c'
@@ -69,44 +54,52 @@ void	*ft_memchr(const void *s, int c, size_t n)
 	return (NULL);
 }
 
-/// @brief Allocates memory for an array of 'nmemb' elements of 'size' bytes
-/// @return Pointer to the zeroed out memory block
-void	*ft_calloc(size_t nmemb, size_t size)
+/// @brief Frees the stash buffer and resets all variables (len, cap) to 0/NULL
+/// @return Always returns NULL (useful for return statements)
+char	*ft_nuke_stash(t_gnl *stash)
 {
-	void	*ptr;
-	size_t	total_size;
-
-	if (size && nmemb > (SIZE_MAX / size))
-		return (NULL);
-	total_size = nmemb * size;
-	ptr = malloc(total_size);
-	if (!ptr)
-		return (NULL);
-	ft_memset(ptr, 0, total_size);
-	return (ptr);
+	if (stash->buf)
+		free(stash->buf);
+	stash->buf = NULL;
+	stash->len = 0;
+	stash->cap = 0;
+	return (NULL);
 }
 
-/// @brief Allocates a new buffer and copies data from old
-/// @param ptr old buffer to be freed
-/// @return Pointer to the new, resized buffer
-void	*ft_mem_realloc(void *ptr, size_t old_size, size_t new_size)
+/// @brief Frees a temporary buffer and returns a specific integer value
+/// @return The value of 'ret_val', either -1 or 0
+int	ft_free_ret(char *tmp, int ret_val)
 {
-	void	*new_ptr;
+	free(tmp);
+	return (ret_val);
+}
 
-	new_ptr = ft_calloc(1, new_size);
-	if (!new_ptr)
+/// @brief Appends 'r' bytes from 'tmp' to stash, growing capacity geometrically
+/// @return 1 on success, 0 on failure
+int	ft_append_stash(t_gnl *stash, char *tmp, int r)
+{
+	char	*new_buf;
+	size_t	new_cap;
+
+	if (!stash->buf || stash->len + r > stash->cap)
 	{
-		if (ptr)
-			free(ptr);
-		return (NULL);
+		new_cap = stash->cap * 2;
+		if (stash->cap == 0)
+			new_cap = BUFFER_SIZE;
+		while (new_cap < stash->len + r)
+			new_cap *= 2;
+		new_buf = malloc(new_cap);
+		if (!new_buf)
+			return (0);
+		if (stash->buf)
+		{
+			ft_memmove(new_buf, stash->buf, stash->len);
+			free(stash->buf);
+		}
+		stash->buf = new_buf;
+		stash->cap = new_cap;
 	}
-	if (ptr && old_size)
-	{
-		if (old_size < new_size)
-			ft_memmove(new_ptr, ptr, old_size);
-		else
-			ft_memmove(new_ptr, ptr, new_size);
-		free(ptr);
-	}
-	return (new_ptr);
+	ft_memmove(stash->buf + stash->len, tmp, r);
+	stash->len += r;
+	return (1);
 }
