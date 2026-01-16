@@ -8,16 +8,17 @@ The goal of this project is to read from a file descriptor until a newline is fo
 A major technical challenge in this assignment is handling **large lines** (e.g., 10MB of text without a newline) efficiently.
 
 **The Standard Approach vs. My Solution:**
-Standard implementations often re-allocate memory linearly (adding fixed buffer sizes), which leads to **O(N²)** complexity and CPU timeouts on large files.
 
-To solve this, I implemented **geometric capacity growth** (doubling the buffer size when full). This ensures the function runs with **amortized O(N)** complexity, making it instant even for massive files.
+- Standard implementations often re-allocate memory linearly (adding fixed buffer sizes), which leads to **O(N²)** complexity and CPU timeouts on large files.
+
+- To solve this, I implemented **geometric capacity growth** (doubling the buffer size when full). This ensures the function runs with **amortized O(N)** complexity, making it instant even for massive files.
 
 ### Key Features
 
-* **Performance:** Optimized buffer management (`cap * 2`) prevents timeouts.
-* **Binary Safe:** Uses `memmove` instead of string functions, allowing it to read binary files containing null bytes (`\0`).
-* **Memory Safety:** Includes a "nuke" mechanism that cleans up all static memory immediately if a `malloc` fails, ensuring no memory leaks or zombie pointers.
-* **Multi-FD Support:** Can read from multiple file descriptors simultaneously (e.g., reading a log file while reading stdin).
+- **Performance:** Optimized buffer management (`cap * 2`) prevents timeouts.
+- **Binary Safe:** Uses `memmove` instead of string functions, allowing it to read binary files containing null bytes (`\0`).
+- **Memory Safety:** Includes a "nuke" mechanism that cleans up all static memory immediately if a `malloc` fails, ensuring no memory leaks or zombie pointers.
+- **Multi-FD Support:** Can read from multiple file descriptors simultaneously (e.g., reading a log file while reading stdin).
 
 ### Performance Benchmark
 
@@ -57,5 +58,27 @@ Define the BUFFER_SIZE flag during compilation:
 ```
 cc -Wall -Wextra -Werror -D BUFFER_SIZE=42 main.c get_next_line.c get_next_line_utils.c
 ```
+### Resources
+
+**References:**
+
+- Linux Man Page: read(2) - Used to understand return values and error handling.
+
+- Linux Man Page: malloc(3) - For dynamic memory management.
+
+- Linux Man Page: open(2) - Essential for file descriptor management.
+
+- GeeksforGeeks: Static Variables in C - Understanding the lifecycle of the stash buffer.
+
+- C++ std::vector documentation - Inspiration for the geometric capacity growth strategy.
+
+**AI Usage (Gemini):**
+
+- Logic & Algorithm Design: Discussing the mathematical advantages of geometric growth vs. linear allocation to solve timeout issues with large files.
+
+- Debugging Assistant: Helping to analyze edge cases (like the "Giant Line" test) and identifying potential causes for memory leaks or timeouts.
+
+- Concept Verification: Clarifying the behavior of static variables and file descriptors to ensure the implementation aligns with the 42 curriculum standards.
+
 
 ### ***Created as part of the 42 Curriculum*** 🌌
