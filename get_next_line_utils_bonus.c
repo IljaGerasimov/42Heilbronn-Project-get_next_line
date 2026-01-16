@@ -6,11 +6,11 @@
 /*   By: igerasim <igerasim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 15:46:37 by igerasim          #+#    #+#             */
-/*   Updated: 2026/01/15 01:18:55 by igerasim         ###   ########.fr       */
+/*   Updated: 2026/01/16 13:58:52 by igerasim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 /// @brief Moves 'n' bytes from 'src' to 'dest'
 /// @return dest pointer

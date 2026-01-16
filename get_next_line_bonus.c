@@ -6,11 +6,11 @@
 /*   By: igerasim <igerasim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 15:47:34 by igerasim          #+#    #+#             */
-/*   Updated: 2026/01/15 01:33:27 by igerasim         ###   ########.fr       */
+/*   Updated: 2026/01/16 13:58:51 by igerasim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static int	stash_read(int fd, t_gnl *stash)
 {
